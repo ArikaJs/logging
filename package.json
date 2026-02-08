@@ -1,0 +1,44 @@
+{
+    "name": "@arikajs/logging",
+    "version": "0.1.0",
+    "description": "Flexible, channel-based logging system for the ArikaJS framework.",
+    "license": "MIT",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "build:tests": "tsc -p tsconfig.test.json",
+        "clean": "rm -rf dist",
+        "prepare": "npm run build",
+        "test": "npm run build && npm run build:tests && node scripts/fix-test-imports.js && node --test 'dist/tests/**/*.test.js'",
+        "test:watch": "npm run build && npm run build:tests && node --test --watch 'dist/tests/**/*.test.js'"
+    },
+    "files": [
+        "dist"
+    ],
+    "keywords": [
+        "arika",
+        "arika-js",
+        "logging",
+        "logger",
+        "log",
+        "channel",
+        "stack"
+    ],
+    "engines": {
+        "node": ">=20.0.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/arikajs/logging.git"
+    },
+    "bugs": {
+        "url": "https://github.com/arikajs/logging/issues"
+    },
+    "homepage": "https://github.com/arikajs/logging#readme",
+    "dependencies": {},
+    "devDependencies": {
+        "@types/node": "^20.11.24",
+        "typescript": "^5.3.3"
+    }
+}

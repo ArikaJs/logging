@@ -1,0 +1,37 @@
+
+import { Logger } from '../Contracts/Logger';
+import fs from 'fs';
+import path from 'path';
+
+export class FileDriver implements Logger {
+    private filePath: string;
+
+    constructor(config: any) {
+        this.filePath = config.path || 'app.log';
+        this.ensureFileExists();
+    }
+
+    private ensureFileExists() {
+        const dir = path.dirname(this.filePath);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+    }
+
+    log(level: string, message: string, context?: any): void {
+        const timestamp = new Date().toISOString();
+        const contextStr = context ? JSON.stringify(context) : '';
+        const line = `[${timestamp}] ${level.toUpperCase()}: ${message} ${contextStr}\n`;
+
+        fs.appendFileSync(this.filePath, line);
+    }
+
+    emergency(message: string, context?: any): void { this.log('emergency', message, context); }
+    alert(message: string, context?: any): void { this.log('alert', message, context); }
+    critical(message: string, context?: any): void { this.log('critical', message, context); }
+    error(message: string, context?: any): void { this.log('error', message, context); }
+    warning(message: string, context?: any): void { this.log('warning', message, context); }
+    notice(message: string, context?: any): void { this.log('notice', message, context); }
+    info(message: string, context?: any): void { this.log('info', message, context); }
+    debug(message: string, context?: any): void { this.log('debug', message, context); }
+}
