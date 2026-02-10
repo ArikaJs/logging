@@ -52,23 +52,32 @@ Log.channel('daily').warning('Low disk space');
 
 ```ts
 export default {
-  default: 'stack',
+  default: process.env.LOG_CHANNEL || 'stack',
 
   channels: {
     stack: {
       driver: 'stack',
-      channels: ['console', 'file']
+      channels: ['single'],
+    },
+
+    single: {
+      driver: 'file',
+      path: './storage/logs/arika.log',
+      level: process.env.LOG_LEVEL || 'debug',
+    },
+
+    daily: {
+      driver: 'daily',
+      path: './storage/logs/arika.log',
+      level: process.env.LOG_LEVEL || 'debug',
+      days: 14,
     },
 
     console: {
-      driver: 'console'
+      driver: 'console',
+      level: process.env.LOG_LEVEL || 'debug',
     },
-
-    file: {
-      driver: 'file',
-      path: './storage/logs/app.log'
-    }
-  }
+  },
 };
 ```
 
@@ -76,13 +85,13 @@ export default {
 
 ## 🔌 Supported Drivers (v1)
 
-| Driver | Status |
-| :--- | :--- |
-| Console | ✅ Supported |
-| File | ✅ Supported |
-| Stack | ✅ Supported |
-| Daily files | ⏳ Planned |
-| External services | ⏳ Planned |
+| Driver | Status | Description |
+| :--- | :--- | :--- |
+| **Console** | ✅ Supported | Standard output logging |
+| **File** | ✅ Supported | Single file logging |
+| **Daily** | ✅ Supported | Date-based rotating log files |
+| **Stack** | ✅ Supported | Multi-channel composite logging |
+| External services | ⏳ Planned | Slack, Papertrail, etc. |
 
 ---
 

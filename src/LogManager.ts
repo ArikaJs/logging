@@ -2,6 +2,7 @@
 import { Logger } from './Logger';
 import { ConsoleDriver } from './Drivers/ConsoleDriver';
 import { FileDriver } from './Drivers/FileDriver';
+import { DailyDriver } from './Drivers/DailyDriver';
 import { Logger as LoggerContract } from './Contracts/Logger';
 
 export class LogManager {
@@ -38,6 +39,10 @@ export class LogManager {
         }
 
         throw new Error(`Driver [${config.driver}] is not supported.`);
+    }
+
+    protected createDailyDriver(config: any): LoggerContract {
+        return new DailyDriver(config);
     }
 
     protected createConsoleDriver(config: any): LoggerContract {

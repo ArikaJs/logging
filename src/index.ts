@@ -34,3 +34,4 @@ export class Log {
 export { LogManager, Logger };
 export { ConsoleDriver } from './Drivers/ConsoleDriver';
 export { FileDriver } from './Drivers/FileDriver';
+export { DailyDriver } from './Drivers/DailyDriver';
