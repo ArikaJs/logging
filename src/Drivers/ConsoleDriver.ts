@@ -1,13 +1,42 @@
-
 import { Logger } from '../Contracts/Logger';
 
 export class ConsoleDriver implements Logger {
-    constructor(config: any = {}) { }
+    private colors: Record<string, string> = {
+        emergency: '\x1b[41m\x1b[37m', // White on Red
+        alert: '\x1b[41m\x1b[37m',     // White on Red
+        critical: '\x1b[41m\x1b[37m',  // White on Red
+        error: '\x1b[31m',             // Red
+        warning: '\x1b[33m',           // Yellow
+        notice: '\x1b[34m',            // Blue
+        info: '\x1b[32m',              // Green
+        debug: '\x1b[90m',             // Gray
+    };
+
+    private levels: Record<string, number> = {
+        emergency: 0,
+        alert: 1,
+        critical: 2,
+        error: 3,
+        warning: 4,
+        notice: 5,
+        info: 6,
+        debug: 7,
+    };
+
+    constructor(private config: any = {}) { }
 
     log(level: string, message: string, context?: any): void {
-        const timestamp = new Date().toISOString();
-        const contextStr = context ? JSON.stringify(context) : '';
-        const output = `[${timestamp}] ${level.toUpperCase()}: ${message} ${contextStr}`;
+        const configLevel = this.config.level || 'debug';
+        if (this.levels[level] > this.levels[configLevel]) {
+            return;
+        }
+
+        const timestamp = new Date().toISOString().replace('T', ' ').split('.')[0];
+        const color = this.colors[level] || '';
+        const reset = '\x1b[0m';
+        const contextStr = context ? ' ' + JSON.stringify(context) : '';
+
+        const output = `[${timestamp}] ${color}${level.toUpperCase()}${reset}: ${message}${contextStr}`;
 
         switch (level) {
             case 'emergency':
