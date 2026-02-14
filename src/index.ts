@@ -32,7 +32,6 @@ export class Log {
 }
 
 export { LogManager, Logger };
-export { LoggingServiceProvider } from './LoggingServiceProvider';
 export { ConsoleDriver } from './Drivers/ConsoleDriver';
 export { FileDriver } from './Drivers/FileDriver';
 export { DailyDriver } from './Drivers/DailyDriver';
