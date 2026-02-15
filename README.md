@@ -1,9 +1,8 @@
-
 ## Arika Logging
 
 `@arikajs/logging` provides a flexible, channel-based logging system for the ArikaJS framework.
 
-It allows applications to write logs to multiple destinations (console, files, external services) using a unified API, inspired by Laravel’s logging system.
+It allows applications to write logs to multiple destinations (console, files, external services) using a unified API.
 
 ---
 
