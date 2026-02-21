@@ -1,5 +1,6 @@
-
 import { Logger } from '../Contracts/Logger';
+import { Formatter } from '../Contracts/Formatter';
+import { LineFormatter } from '../Formatters/LineFormatter';
 import fs from 'fs';
 import path from 'path';
 
@@ -17,9 +18,12 @@ export class FileDriver implements Logger {
         debug: 7,
     };
 
+    private formatter: Formatter;
+
     constructor(private config: any) {
         this.filePath = config.path || 'app.log';
         this.ensureFileExists();
+        this.formatter = config.formatter || new LineFormatter();
     }
 
     private ensureFileExists() {
@@ -35,9 +39,7 @@ export class FileDriver implements Logger {
             return;
         }
 
-        const timestamp = new Date().toISOString().replace('T', ' ').split('.')[0];
-        const contextStr = context ? ' ' + JSON.stringify(context) : '';
-        const line = `[${timestamp}] ${level.toUpperCase()}: ${message}${contextStr}\n`;
+        const line = this.formatter.format(level, message, context) + '\n';
 
         fs.appendFileSync(this.filePath, line);
     }

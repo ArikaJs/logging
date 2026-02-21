@@ -1,4 +1,6 @@
 import { Logger } from '../Contracts/Logger';
+import { Formatter } from '../Contracts/Formatter';
+import { LineFormatter } from '../Formatters/LineFormatter';
 
 export class ConsoleDriver implements Logger {
     private colors: Record<string, string> = {
@@ -23,7 +25,17 @@ export class ConsoleDriver implements Logger {
         debug: 7,
     };
 
-    constructor(private config: any = {}) { }
+    private formatter: Formatter;
+
+    constructor(private config: any = {}) {
+        // If config.formatter was 'pretty', LogManager might have returned a default LineFormatter.
+        // We want to ensure ConsoleDriver uses colors for 'pretty' or default.
+        if (!config.formatter || (typeof config._rawFormatter === 'string' && config._rawFormatter === 'pretty')) {
+            this.formatter = new LineFormatter(this.colors);
+        } else {
+            this.formatter = config.formatter;
+        }
+    }
 
     log(level: string, message: string, context?: any): void {
         const configLevel = this.config.level || 'debug';
@@ -31,12 +43,7 @@ export class ConsoleDriver implements Logger {
             return;
         }
 
-        const timestamp = new Date().toISOString().replace('T', ' ').split('.')[0];
-        const color = this.colors[level] || '';
-        const reset = '\x1b[0m';
-        const contextStr = context ? ' ' + JSON.stringify(context) : '';
-
-        const output = `[${timestamp}] ${color}${level.toUpperCase()}${reset}: ${message}${contextStr}`;
+        const output = this.formatter.format(level, message, context);
 
         switch (level) {
             case 'emergency':

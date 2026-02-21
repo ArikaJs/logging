@@ -9,11 +9,13 @@ It allows applications to write logs to multiple destinations (console, files, e
 ## ✨ Features
 
 - **Multiple log channels**: Separate outputs for different needs
-- **Driver-based architecture**: Pluggable backends (console, file, etc.)
-- **Log levels**: Compatible with standard levels (debug, info, warning, error, etc.)
+- **Driver-based architecture**: Pluggable backends (console, file, slack, etc.)
+- **Log levels**: RFC 5424 compliant (emergency, alert, critical, error, warning, notice, info, debug)
+- **Shared Context**: Set global metadata across all log entries
+- **JSON Formatting**: Native support for structured logs
 - **Stackable channels**: Combine multiple channels
-- **File & console drivers (v1)**: Essential logging outputs
-- **Contextual logging**: Pass metadata with log messages
+- **File & console drivers**: Essential logging outputs
+- **Slack integration**: Native webhook support for critical alerts
 - **TypeScript-first**: Strongly typed interface
 
 ---
@@ -39,10 +41,59 @@ Log.info('Application started');
 Log.error('Something went wrong', { userId: 1 });
 ```
 
-### 📂 Log Channels
+Log.channel('daily').warning('Low disk space');
+```
+
+### 🎨 Formatting System
+
+Arika Logging supports a pluggable formatting system. You can choose from built-in formatters or create your own.
+
+**Available Formatters:**
+- `json`: Structured JSON output (merges context into root)
+- `pretty`: Colored text output for development
+- `line` (or `text`): Standard plain text output
 
 ```ts
-Log.channel('daily').warning('Low disk space');
+export default {
+  channels: {
+    // Production: Structured JSON for ELK/Datadog
+    app: {
+      driver: 'file',
+      path: './logs/app.json',
+      formatter: 'json',
+    },
+
+    // Development: Colored console output
+    console: {
+      driver: 'console',
+      formatter: 'pretty',
+    }
+  }
+}
+```
+
+**JSON Output Example:**
+```json
+{
+  "timestamp": "2026-02-21T10:30:00Z",
+  "level": "info",
+  "message": "User logged in",
+  "userId": 1,
+  "ip": "127.0.0.1"
+}
+```
+
+---
+
+### 🧠 Shared Context
+
+You can append context that will be included in every subsequent log entry for that logger.
+
+```ts
+Log.withContext({ traceId: 'req_123' });
+
+Log.info('Processing order'); // Included traceId: req_123
+Log.error('Order failed');    // Included traceId: req_123
 ```
 
 ---
@@ -75,6 +126,13 @@ export default {
     console: {
       driver: 'console',
       level: process.env.LOG_LEVEL || 'debug',
+      formatter: 'json', // Use 'json' for structured logs
+    },
+
+    slack: {
+      driver: 'slack',
+      url: process.env.LOG_SLACK_WEBHOOK_URL,
+      level: 'critical',
     },
   },
 };
@@ -86,11 +144,12 @@ export default {
 
 | Driver | Status | Description |
 | :--- | :--- | :--- |
-| **Console** | ✅ Supported | Standard output logging |
-| **File** | ✅ Supported | Single file logging |
+| **Console** | ✅ Supported | Standard output logging (Supports JSON) |
+| **File** | ✅ Supported | Single file logging (Supports JSON) |
 | **Daily** | ✅ Supported | Date-based rotating log files |
 | **Stack** | ✅ Supported | Multi-channel composite logging |
-| External services | ⏳ Planned | Slack, Papertrail, etc. |
+| **Slack** | ✅ Supported | Critical alerts via Webhooks |
+| Papertrail | ⏳ Planned | External service driver |
 
 ---
 
