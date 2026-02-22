@@ -184,6 +184,31 @@ logging/
 
 ---
 
+## 🏗 Architecture
+
+```text
+logging/
+├── src/
+│   ├── Contracts
+│   │   ├── Formatter.ts
+│   │   └── Logger.ts
+│   ├── Drivers
+│   │   ├── ConsoleDriver.ts
+│   │   ├── DailyDriver.ts
+│   │   ├── FileDriver.ts
+│   │   └── SlackDriver.ts
+│   ├── Formatters
+│   │   ├── JsonFormatter.ts
+│   │   └── LineFormatter.ts
+│   ├── index.ts
+│   ├── Logger.ts
+│   └── LogManager.ts
+├── tests/
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
 ## 📄 License
 
 `@arikajs/logging` is open-source software licensed under the **MIT License**.
