@@ -162,28 +162,6 @@ export default {
 
 ---
 
-## 🧠 Architecture (High Level)
-
-```
-logging/
-├── src/
-│   ├── LogManager.ts
-│   ├── Logger.ts
-│   ├── Drivers/
-│   │   ├── ConsoleDriver.ts
-│   │   └── FileDriver.ts
-│   ├── Contracts/
-│   │   └── Logger.ts
-│   └── index.ts
-├── tests/
-├── package.json
-├── tsconfig.json
-├── README.md
-└── LICENSE
-```
-
----
-
 ## 🏗 Architecture
 
 ```text
